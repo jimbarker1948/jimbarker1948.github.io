@@ -49,8 +49,7 @@ function makeCorsRequest() {
   var http_request;
   http_request = new XMLHttpRequest();
   //http_request.onreadystatechange = function (data) { console.log(data) };
-  http_request.open("GET", url);
-  http_request.withCredentials = true;
+  http_request.open("GET", url, true);
   http_request.setRequestHeader('Access-Control-Allow-Origin', '*');
   http_request.setRequestHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
   http_request.setRequestHeader('Access-Control-Allow-Credentials', 'true')
