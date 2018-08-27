@@ -1,77 +1,51 @@
-<script language="JavaScript">
-// Create the XHR object.
-function createCORSRequest(method, url) {
-  var xhr = new XMLHttpRequest();
-  xhr.withCredentials = true;
+<html>
+<head>
+<script>
+var $jsonp = (function(){
+  var that = {};
 
-  if ("withCredentials" in xhr) {
-    // XHR for Chrome/Firefox/Opera/Safari.
-    xhr.open(method, url, true);
-    xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhr.setRequestHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    xhr.setRequestHeader('Access-Control-Allow-Methods', 'Origin, Content-Type, X-Auth-Token')
-  } else if (typeof XDomainRequest != "undefined") {
-    // XDomainRequest for IE.
-    xhr = new XDomainRequest();
-    xhr.open(method, url);
-    xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhr.setRequestHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    xhr.setRequestHeader('Access-Control-Allow-Methods', 'Origin, Content-Type, X-Auth-Token')
-  } else {
-    // CORS not supported.
-    xhr = null;
-  }
-  return xhr;
-}
+  that.send = function(src, options) {
+    var callback_name = options.callbackName || 'callback',
+      on_success = options.onSuccess || function(){},
+      on_timeout = options.onTimeout || function(){},
+      timeout = options.timeout || 10; // sec
 
-// Make the actual CORS request.
-function makeCorsRequest() {
-  // This is a sample server that supports CORS.
-  var url = 'https://www.pornhub.com/webmasters/video_by_id?id=44bc40f3bc04f65b7a35&thumbsize=medium';
-/*
-  var xhr = createCORSRequest('GET', url);
-  if (!xhr) {
-    alert('CORS not supported');
-    return;
+    var timeout_trigger = window.setTimeout(function(){
+      window[callback_name] = function(){};
+      on_timeout();
+    }, timeout * 1000);
+
+    window[callback_name] = function(data){
+      window.clearTimeout(timeout_trigger);
+      on_success(data);
+    }
+
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = src;
+
+    document.getElementsByTagName('head')[0].appendChild(script);
   }
 
-  // Response handlers.
-  xhr.onload = function() {
-    var text = xhr.responseText;
-    console.log(text)
-  };
-
-  xhr.onerror = function() {
-    console.log('Woops, there was an error making the request.');
-  };
-  xhr.send();
-  */
-  var http_request;
-  http_request = new XMLHttpRequest();
-  //http_request.onreadystatechange = function (data) { console.log(data) };
-  if ("withCredentials" in http_request) {
-    // XHR for Chrome/Firefox/Opera/Safari.
-    http_request.open('GET', url, true);
-  } else if (typeof XDomainRequest != "undefined") {
-    // XDomainRequest for IE.
-    http_request = new XDomainRequest();
-    http_request.open(method, url);
-  }
-  http_request.setRequestHeader('Access-Control-Allow-Origin', '*');
-  http_request.setRequestHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-  http_request.setRequestHeader('Access-Control-Allow-Credentials', 'true')
-  http_request.setRequestHeader('Access-Control-Allow-Methods', 'GET')
-  http_request.setRequestHeader("Content-Type", "application/json");
-  http_request.send();
-  // Response handlers.
-  http_request.onload = function() {
-    var text = http_request.responseText;
-    console.log(text)
-  };
-
-  http_request.onerror = function() {
-    console.log('Woops, there was an error making the request.');
-  };
-}
-makeCorsRequest()
+  return that;
+})();
+$jsonp.send('//www.pornhub.com/webmasters/video_by_id?id=44bc40f3bc04f65b7a35&thumbsize=medium?callback=handleStuff', {
+    callbackName: 'handleStuff',
+    onSuccess: function(json){
+        console.log('success!', json);
+    },
+    onTimeout: function(){
+        console.log('timeout!');
+    },
+    timeout: 5
+});
 </script>
+</head>
+<body>
+  Yo
+  <script language="JavaScript">
+
+  </script>
+</body>
+</html>
