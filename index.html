@@ -1,45 +1,16 @@
 <html>
 <head>
 <script>
-var $jsonp = (function(){
-  var that = {};
-
-  that.send = function(src, options) {
-    var callback_name = options.callbackName || 'callback',
-      on_success = options.onSuccess || function(){},
-      on_timeout = options.onTimeout || function(){},
-      timeout = options.timeout || 10; // sec
-
-    var timeout_trigger = window.setTimeout(function(){
-      window[callback_name] = function(){};
-      on_timeout();
-    }, timeout * 1000);
-
-    window[callback_name] = function(data){
-      window.clearTimeout(timeout_trigger);
-      on_success(data);
-    }
-
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = src;
-
-    document.getElementsByTagName('head')[0].appendChild(script);
-  }
-
-  return that;
-})();
-$jsonp.send('//www.pornhub.com/webmasters/video_by_id?id=44bc40f3bc04f65b7a35&thumbsize=medium?callback=handleStuff', {
-    callbackName: 'handleStuff',
-    onSuccess: function(json){
-        console.log('success!', json);
-    },
-    onTimeout: function(){
-        console.log('timeout!');
-    },
-    timeout: 5
-});
+fetch('https://www.pornhub.com/webmasters/video_by_id?id=44bc40f3bc04f65b7a35&thumbsize=medium', {mode: 'no-cors'})
+  .then(function(response) {
+    return response.text();
+  })
+  .then(function(text) {
+    console.log('Request successful', text);
+  })
+  .catch(function(error) {
+    console.log('Request failed', error)
+  });
 </script>
 </head>
 <body>
