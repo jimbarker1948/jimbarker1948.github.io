@@ -49,12 +49,12 @@ function makeCorsRequest() {
   var http_request;
   http_request = new XMLHttpRequest();
   //http_request.onreadystatechange = function (data) { console.log(data) };
-  http_request.open("POST", url);
+  http_request.open("GET", url);
   http_request.withCredentials = true;
   http_request.setRequestHeader('Access-Control-Allow-Origin', '*');
   http_request.setRequestHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
   http_request.setRequestHeader('Access-Control-Allow-Credentials', 'true')
-  http_request.setRequestHeader('Access-Control-Allow-Methods', 'POST')
+  http_request.setRequestHeader('Access-Control-Allow-Methods', 'GET')
   http_request.setRequestHeader("Content-Type", "application/json");
   http_request.send();
   // Response handlers.
